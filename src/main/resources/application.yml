@@ -2,42 +2,27 @@ server:
   port: 8080   #就用最熟悉的端口吧
 spring:
   application:
-    name: gateway2
+    name: gateway
   cloud:
     gateway:
-      # 开启项目名映射功能，即铜鼓服务名访问项目，不需要写明具体IP地址
+      # 开启项目名映射功能，即通过服务名访问项目，不需要写明具体IP地址
       discovery:
         locator:
           enabled: true
           # 请求路径去不转为小写字母，如AA/aB转为aa/ab
           lower-case-service-id: true
-      routes:
-          #路由的id,没有规定但必须是唯一的，最好对应相应的微服务名
-        - id: github
-          uri: https://github.com/
-          # 断言,如果路径里带有/git
-          # 比如localhost:8080/git  那么地址会被转为 https://github.com/ 但浏览器显示的地址还是localhost:8080/git
-          predicates:
-            - Path=/git/**
-
-
-        - id: mall-user-glf
-          uri: http://192.168.1.25:8083/
-          predicates:
-            - Path=/user/**
-          filters:
-            - StripPrefix=1
-
 eureka:
   instance:
     prefer-ip-address: true
+    #    hostname: gateway-service
+    ip-address: 47.98.149.207
     # 在注册中心上显示的信息
-    instance-id: ${spring.application.name}:${server.port}
-    hostname: gateway-service
+    instance-id: ${eureka.instance.ip-address}:${server.port}
   client:
     service-url:
-      defaultZone: http://47.98.149.207:8000/eureka/
+      defaultZone: http://47.98.149.207:8000/eureka/,http://175.27.134.153:8000/eureka/
 #      defaultZone: http://localhost:8000/eureka/
+
 
 #以前访问http:localhost:8003/mall-user/login/login
 #加网关后访问的是http:localhost:8080/mall-user/login/login
